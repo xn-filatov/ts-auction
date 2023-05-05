@@ -45,10 +45,12 @@ app.post("/users", async (req, res) => {
   }
 });
 
-app.post("/users/deposit", authenticateToken, async (req, res) => {
-  let { login, amount } = req.body;
-  amount = parseInt(amount)
+app.post("/users/deposit", authenticateToken, async (req: any, res) => {
+  let { amount } = req.body;
+  const login = req.user;
+
   try {
+    amount = parseInt(amount)
 
     if (amount <= 0)
       return res.status(401).send("Deposit amount must be greater than 0");
@@ -71,11 +73,30 @@ app.post("/users/deposit", authenticateToken, async (req, res) => {
   }
 });
 
+app.get("/users/balance", authenticateToken, async (req: any, res) => {
+  const login = req.user;
+
+  try {
+    const user = await User.findOne({
+      where: { login: login },
+    });
+
+    if (!user)
+      return res.status(404).send("User not found");
+
+
+    res.send({ balance: user.balance });
+  } catch (error) {
+    res.status(500).send("Internal error");
+    console.log(error);
+  }
+});
+
 app.post("/bidItems/create", authenticateToken, async (req, res) => {
   let { name, startPrice, duration } = req.body;
-  startPrice = parseInt(startPrice)
-  duration = parseInt(duration)
   try {
+    startPrice = parseInt(startPrice)
+    duration = parseInt(duration)
 
     if (startPrice <= 0)
       return res.status(401).send("Start price must be greater than 0");
@@ -96,10 +117,11 @@ app.post("/bidItems/create", authenticateToken, async (req, res) => {
   }
 });
 
-app.post("/bidItems/bid", authenticateToken, async (req, res) => {
+app.post("/bidItems/bid", authenticateToken, async (req: any, res) => {
   let { id, amount } = req.body;
-  amount = parseInt(amount)
+  const login = req.user;
   try {
+    amount = parseInt(amount)
 
     const bidItem = await Bid.findOne({ where: { id: id } })
 
@@ -113,6 +135,11 @@ app.post("/bidItems/bid", authenticateToken, async (req, res) => {
 
     if (amount <= bidItem.startPrice)
       return res.status(401).send("Bid price must be greater than previous price");
+
+    const user = await User.findOne({ where: { login: login } })
+
+    if (amount > user!.balance)
+      return res.status(400).send("Insufficient balance");
 
     bidItem.startPrice = amount;
     await bidItem.save()
@@ -136,6 +163,6 @@ app.get("/bidItems", authenticateToken, async (req, res) => {
 });
 
 app.listen(port, async () => {
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
   console.log(`App listening on port ${port}`);
 });

@@ -9,8 +9,6 @@ function App() {
   const [cookies] = useCookies(["token"]);
 
   useEffect(() => {
-    console.log(1111);
-
     if (cookies.token)
       axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/users/checkToken`, {
@@ -22,7 +20,6 @@ function App() {
         .catch(console.log);
     else setHasToken(false);
   }, [cookies.token]);
-  console.log("TOKEN: ", cookies.token);
 
   return (
     <div className="App">
