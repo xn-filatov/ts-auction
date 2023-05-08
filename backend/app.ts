@@ -11,9 +11,6 @@ import env from './environment'
 const app = express();
 const port = env.PORT || 3000;
 
-// const baseApiUrl = env.BASE_API_URL;
-// const apikey = env.API_KEY;
-
 app.use(cors({ origin: "*" }));
 
 app.use(express.json());
@@ -50,10 +47,10 @@ app.post("/users/deposit", authenticateToken, async (req: any, res) => {
   const login = req.user;
 
   try {
-    amount = parseInt(amount)
+    amount = parseFloat(amount)
 
     if (amount <= 0)
-      return res.status(401).send("Deposit amount must be greater than 0");
+      return res.status(402).send("Deposit amount must be greater than 0");
 
     const user = await User.findOne({
       where: { login: login },
@@ -63,7 +60,7 @@ app.post("/users/deposit", authenticateToken, async (req: any, res) => {
       return res.status(404).send("User not found");
 
 
-    user.balance += parseInt(amount)
+    user.balance += amount
     await user.save()
 
     res.send(user);
@@ -95,14 +92,14 @@ app.get("/users/balance", authenticateToken, async (req: any, res) => {
 app.post("/bidItems/create", authenticateToken, async (req, res) => {
   let { name, startPrice, duration } = req.body;
   try {
-    startPrice = parseInt(startPrice)
-    duration = parseInt(duration)
+    startPrice = parseFloat(startPrice)
+    duration = parseInt(duration) * 60 * 60 * 1000 // To miliseconds
 
     if (startPrice <= 0)
-      return res.status(401).send("Start price must be greater than 0");
+      return res.status(402).send("Start price must be greater than 0");
 
     if (duration <= 0)
-      return res.status(401).send("Time window must be greater than 0");
+      return res.status(402).send("Time window must be greater than 0");
 
     const newBidItem = await Bid.create({
       name: name,
@@ -121,7 +118,7 @@ app.post("/bidItems/bid", authenticateToken, async (req: any, res) => {
   let { id, amount } = req.body;
   const login = req.user;
   try {
-    amount = parseInt(amount)
+    amount = parseFloat(amount)
 
     const bidItem = await Bid.findOne({ where: { id: id } })
 
@@ -134,12 +131,12 @@ app.post("/bidItems/bid", authenticateToken, async (req: any, res) => {
 
 
     if (amount <= bidItem.startPrice)
-      return res.status(401).send("Bid price must be greater than previous price");
+      return res.status(402).send("Bid price must be greater than previous price");
 
     const user = await User.findOne({ where: { login: login } })
 
     if (amount > user!.balance)
-      return res.status(400).send("Insufficient balance");
+      return res.status(402).send("Insufficient balance");
 
     bidItem.startPrice = amount;
     await bidItem.save()

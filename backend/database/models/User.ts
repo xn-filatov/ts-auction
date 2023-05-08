@@ -1,4 +1,4 @@
-import { Model, Column, Table, PrimaryKey } from "sequelize-typescript";
+import { Model, Column, Table, PrimaryKey, DataType } from "sequelize-typescript";
 
 @Table({
   timestamps: false,
@@ -15,7 +15,7 @@ export default class User extends Model<User> {
   @Column
   password!: string;
 
-  @Column
+  @Column(DataType.FLOAT)
   balance!: number;
 
 }

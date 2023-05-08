@@ -16,15 +16,15 @@ type Props = {
 export function BidItem(props: Props) {
   const { bidItemData, handleBid } = props;
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-3">{bidItemData.name}</div>
-        <div className="col-3"> {bidItemData.startPrice}</div>
-        <div className="col-3">{bidItemData.duration}</div>
-        <div className="col-3">
-          <Button onClick={() => handleBid(bidItemData)}>Bid</Button>
-        </div>
-      </div>
-    </div>
+    <tr>
+      <td>{bidItemData.name}</td>
+      <td> {bidItemData.startPrice}</td>
+      <td>{bidItemData.duration / 60 / 60 / 1000} h</td>
+      <td className="d-flex justify-content-center">
+        <Button className="px-4" onClick={() => handleBid(bidItemData)}>
+          Bid
+        </Button>
+      </td>
+    </tr>
   );
 }

@@ -9,10 +9,11 @@ type Props = {
   itemName: string;
   show: boolean;
   onHide: () => void;
+  updateItems: () => void;
 };
 
 function BidModal(props: Props) {
-  const { itemId, itemName, show, onHide } = props;
+  const { itemId, itemName, show, onHide, updateItems } = props;
   const [cookies] = useCookies(["token"]);
   const [isBiddingSuccess, setIsBiddingSuccess] = useState(false);
   const [bidPrice, setBidPrice] = useState(0);
@@ -29,12 +30,16 @@ function BidModal(props: Props) {
       )
       .then((res: any) => {
         setIsBiddingSuccess(true);
+        updateItems();
       })
-      .catch(console.log);
+      .catch((err: any) => {
+        console.log(err);
+        alert(err.response?.data);
+      });
   };
 
   const handleSetBidPrice = (e: any) => {
-    setBidPrice(parseInt(e.target.value));
+    setBidPrice(parseFloat(e.target.value));
   };
 
   const handleOnHide = () => {
@@ -54,7 +59,7 @@ function BidModal(props: Props) {
             <input
               type="number"
               onChange={handleSetBidPrice}
-              placeholder="Input your bidding price"
+              placeholder="Your bidding price"
             />
           </div>
         )) || <p>Bid success</p>}

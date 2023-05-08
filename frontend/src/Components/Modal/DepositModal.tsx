@@ -34,7 +34,7 @@ function DepositModal(props: Props) {
   };
 
   const handleChangeAmount = (e: any) => {
-    setAmount(parseInt(e.target.value));
+    setAmount(parseFloat(e.target.value));
   };
 
   const handleOnHide = () => {
@@ -53,7 +53,7 @@ function DepositModal(props: Props) {
           <input
             type="number"
             onChange={handleChangeAmount}
-            placeholder="Input amount to deposit"
+            placeholder="Amount to deposit"
           />
         )) || <p>Deposit confirmed!</p>}
       </Modal.Body>

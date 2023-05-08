@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Button, ButtonGroup } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import DepositModal from "./Modal/DepositModal";
 
@@ -33,24 +34,22 @@ function Navbar() {
 
   return (
     <>
-      <div className="row bg-light px-2 py-3" style={{ width: "100% " }}>
+      <div className=" row bg-light px-5 py-3">
         <div className="col-6">
           <h3>Jitera Auction</h3>
         </div>
-        <div className="col-6">
-          <p>Balance: {balance}</p>
-          <button
-            className="btn btn-outline-success my-2 my-sm-0"
-            onClick={handleShowDepositModal}
-          >
-            Deposit
-          </button>
-          <button
-            className="btn btn-outline-success my-2 my-sm-0"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+        <div className="col-1 d-flex align-items-center">
+          <b style={{ color: "green" }}>Balance: {balance}</b>
+        </div>
+        <div className="col-5 d-flex justify-content-end">
+          <ButtonGroup>
+            <Button variant="success" onClick={handleShowDepositModal}>
+              Deposit
+            </Button>
+            <Button variant="danger" onClick={handleLogout}>
+              Logout
+            </Button>
+          </ButtonGroup>
         </div>
       </div>
 

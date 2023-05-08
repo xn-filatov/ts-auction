@@ -1,4 +1,4 @@
-import { Model, Column, Table, PrimaryKey, CreatedAt } from "sequelize-typescript";
+import { Model, Column, Table, PrimaryKey, CreatedAt, DataType } from "sequelize-typescript";
 
 @Table
 export default class Bid extends Model<Bid> {
@@ -10,7 +10,7 @@ export default class Bid extends Model<Bid> {
   @Column
   name!: string;
 
-  @Column
+  @Column(DataType.FLOAT)
   startPrice!: number;
 
   @Column

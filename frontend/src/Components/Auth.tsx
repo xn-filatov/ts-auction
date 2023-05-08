@@ -20,6 +20,10 @@ function Auth(props: Props) {
   const { setHasToken } = props;
   const [, setCookie] = useCookies(["token"]);
 
+  const renderError = (msg: string) => (
+    <div style={{ color: "red", fontSize: "10px" }}>{msg}</div>
+  );
+
   return (
     <Formik
       initialValues={{ login: "", password: "" }}
@@ -44,7 +48,10 @@ function Auth(props: Props) {
             setCookie("token", res.data.token, { path: "/" });
             setHasToken(true);
           })
-          .catch(console.log);
+          .catch((err: any) => {
+            console.log(err);
+            if (err.response?.status == 403) alert(err.response?.data);
+          });
       }}
     >
       {({ isSubmitting }: any) => (
@@ -52,15 +59,19 @@ function Auth(props: Props) {
           <div className="row">
             <label>Login:</label>
             <Field type="login" name="login" />
-            <ErrorMessage name="login" component="div" />
+            <ErrorMessage name="login" component="div" render={renderError} />
           </div>
-          <div className="row">
+          <div className="row mt-2">
             <label>Password:</label>
             <Field type="password" name="password" />
-            <ErrorMessage name="password" component="div" />
+            <ErrorMessage
+              name="password"
+              component="div"
+              render={renderError}
+            />
           </div>
 
-          <button className="mt-2" type="submit" disabled={isSubmitting}>
+          <button className="mt-3" type="submit" disabled={isSubmitting}>
             Sign in
           </button>
         </Form>

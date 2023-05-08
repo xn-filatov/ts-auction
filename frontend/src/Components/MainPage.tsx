@@ -44,40 +44,46 @@ function MainPage() {
 
   return (
     <>
-      <div className="container">
-        <Navbar />
-        <Button onClick={handleShowCreateItemModal}>Create Item</Button>
+      <Navbar />
+      <div className="container mt-2">
+        <Button onClick={handleShowCreateItemModal} variant="outline-info">
+          Create Item
+        </Button>
 
         <Form.Check
           type={"checkbox"}
           label={`Filter ongoing`}
+          className="mt-3"
           defaultChecked={isFilterOngoing}
           onChange={() => setIsFilterOngoing(!isFilterOngoing)}
         />
 
-        <table className="table" style={{ width: "100%" }}>
+        <table className="table table-hover">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Current Price</th>
-              <th>Duration</th>
-              <th>Bid</th>
+              <th scope="col">Name</th>
+              <th scope="col">Current Price</th>
+              <th scope="col">Duration</th>
+              <th scope="col" className="text-center">
+                Bid
+              </th>
             </tr>
           </thead>
+          <tbody>
+            {bidsData
+              ?.filter((x: BidItemData) => {
+                if (!isFilterOngoing) return x;
+                else {
+                  const bidExpirationTime =
+                    new Date(x.createdAt).getTime() + x.duration;
+                  if (Date.now() <= bidExpirationTime) return x;
+                }
+              })
+              .map((x: BidItemData) => {
+                return <BidItem bidItemData={x} handleBid={handleBid} />;
+              })}
+          </tbody>
         </table>
-
-        {bidsData
-          ?.filter((x: BidItemData) => {
-            if (!isFilterOngoing) return x;
-            else {
-              const bidExpirationTime =
-                new Date(x.createdAt).getTime() + x.duration;
-              if (Date.now() <= bidExpirationTime) return x;
-            }
-          })
-          .map((x: BidItemData) => {
-            return <BidItem bidItemData={x} handleBid={handleBid} />;
-          })}
       </div>
       <CreateItemModal
         show={showCreateItemModal}
@@ -90,6 +96,7 @@ function MainPage() {
           itemName={selectedItem.name}
           show={showBidModal}
           onHide={handleCloseBidModal}
+          updateItems={updateItems}
         />
       )}
     </>
