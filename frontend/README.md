@@ -1,6 +1,10 @@
-# Getting Started with Create React App
+# Getting Started
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Run `yarn install` to install the dependencies.
+
+Copy the `.env.example` file in the root directory of the project, change the name of the copy to `.env` and add the following environment variables:
+
+`REACT_APP_BACKEND_URL` - backend url
 
 ## Available Scripts
 
