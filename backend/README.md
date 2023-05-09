@@ -8,12 +8,12 @@ Run `yarn install` to install the dependencies.
 
 Copy the `.env.example` file in the root directory of the project, change the name of the copy to `.env` and add the following environment variables:
 
-`PORT` - number of the port that will be used to run the app
-`HOST` - the host of the database
-`USER` - database user name
-`PASSWORD` - user password
-`DB` - database name
-`DIALECT` - database dialect
+`PORT` - number of the port that will be used to run the app  
+`HOST` - the host of the database  
+`USER` - database user name  
+`PASSWORD` - user password  
+`DB` - database name  
+`DIALECT` - database dialect  
 `TOKEN_SECRET` - jwt token secret
 
 Start the PostgreSQL server and create a database with the name you specified in the `.env` file.
