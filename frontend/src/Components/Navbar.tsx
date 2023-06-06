@@ -36,7 +36,7 @@ function Navbar() {
     <>
       <div className=" row bg-light px-5 py-3">
         <div className="col-6">
-          <h3>Jitera Auction</h3>
+          <h3>Auction</h3>
         </div>
         <div className="col-1 d-flex align-items-center">
           <b style={{ color: "green" }}>Balance: {balance}</b>
