@@ -3,17 +3,17 @@ import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useCookies } from "react-cookie";
+import { updateItemsFx } from "../../Stores/itemStorage";
 
 type Props = {
   itemId: number;
   itemName: string;
   show: boolean;
   onHide: () => void;
-  updateItems: () => void;
 };
 
 function BidModal(props: Props) {
-  const { itemId, itemName, show, onHide, updateItems } = props;
+  const { itemId, itemName, show, onHide } = props;
   const [cookies] = useCookies(["token"]);
   const [isBiddingSuccess, setIsBiddingSuccess] = useState(false);
   const [bidPrice, setBidPrice] = useState(0);
@@ -30,7 +30,7 @@ function BidModal(props: Props) {
       )
       .then((res: any) => {
         setIsBiddingSuccess(true);
-        updateItems();
+        updateItemsFx(cookies.token);
       })
       .catch((err: any) => {
         console.log(err);

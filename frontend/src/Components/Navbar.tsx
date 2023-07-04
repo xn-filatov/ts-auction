@@ -4,26 +4,18 @@ import { Button, ButtonGroup } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import DepositModal from "./Modal/DepositModal";
 
+import { useStore } from "effector-react";
+import $userStore, { updateBalanceFx } from "../Stores/userStore";
+
 function Navbar() {
   const [cookies, , removeCookie] = useCookies(["token"]);
+  const userStore = useStore($userStore);
 
   const [showDepositModal, setShowDepositModal] = useState(false);
-  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    updateBalance();
+    updateBalanceFx(cookies.token);
   }, []);
-
-  const updateBalance = () => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/users/balance`, {
-        headers: { Authorization: `Bearer ${cookies.token}` },
-      })
-      .then((res) => {
-        setBalance(res.data.balance);
-      })
-      .catch(console.log);
-  };
 
   const handleCloseDepositModal = () => setShowDepositModal(false);
   const handleShowDepositModal = () => setShowDepositModal(true);
@@ -39,7 +31,7 @@ function Navbar() {
           <h3>Auction</h3>
         </div>
         <div className="col-1 d-flex align-items-center">
-          <b style={{ color: "green" }}>Balance: {balance}</b>
+          <b style={{ color: "green" }}>Balance: {userStore.balance}</b>
         </div>
         <div className="col-5 d-flex justify-content-end">
           <ButtonGroup>
@@ -53,11 +45,7 @@ function Navbar() {
         </div>
       </div>
 
-      <DepositModal
-        show={showDepositModal}
-        onHide={handleCloseDepositModal}
-        setBalance={setBalance}
-      />
+      <DepositModal show={showDepositModal} onHide={handleCloseDepositModal} />
     </>
   );
 }

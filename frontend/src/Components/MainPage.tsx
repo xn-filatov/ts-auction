@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Navbar from "./Navbar";
 import { BidItem, BidItemData } from "./BidItem";
-import axios from "axios";
 import CreateItemModal from "./Modal/CreateItemModal";
 import { Button, Form } from "react-bootstrap";
 import BidModal from "./Modal/BidModal";
+import $bidsData, { updateItemsFx } from "../Stores/itemStorage";
+import { useStore } from "effector-react";
 
 function MainPage() {
   const [cookies] = useCookies(["token"]);
-  const [bidsData, setBidsData] = useState<BidItemData[] | null>(null);
+  const bidsData = useStore($bidsData);
   const [selectedItem, setSelectedItem] = useState<BidItemData | null>(null);
   const [isFilterOngoing, setIsFilterOngoing] = useState(false);
 
@@ -22,19 +23,8 @@ function MainPage() {
   const handleShowBidModal = () => setShowBidModal(true);
 
   useEffect(() => {
-    updateItems();
+    updateItemsFx(cookies.token);
   }, []);
-
-  const updateItems = () => {
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/bidItems`, {
-        headers: { Authorization: `Bearer ${cookies.token}` },
-      })
-      .then((res) => {
-        setBidsData(res.data);
-      })
-      .catch(console.log);
-  };
 
   const handleBid = (item: BidItemData) => {
     setShowBidModal(true);
@@ -79,8 +69,10 @@ function MainPage() {
                   if (Date.now() <= bidExpirationTime) return x;
                 }
               })
-              .map((x: BidItemData) => {
-                return <BidItem bidItemData={x} handleBid={handleBid} />;
+              .map((x: BidItemData, i: number) => {
+                return (
+                  <BidItem key={i} bidItemData={x} handleBid={handleBid} />
+                );
               })}
           </tbody>
         </table>
@@ -88,7 +80,6 @@ function MainPage() {
       <CreateItemModal
         show={showCreateItemModal}
         onHide={handleCloseCreateItemModal}
-        updateItems={updateItems}
       />
       {selectedItem && (
         <BidModal
@@ -96,7 +87,6 @@ function MainPage() {
           itemName={selectedItem.name}
           show={showBidModal}
           onHide={handleCloseBidModal}
-          updateItems={updateItems}
         />
       )}
     </>

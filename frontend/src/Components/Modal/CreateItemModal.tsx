@@ -1,17 +1,16 @@
-import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useCookies } from "react-cookie";
+import { createItemFx } from "../../Stores/itemStorage";
 
 type Props = {
   show: boolean;
   onHide: () => void;
-  updateItems: () => void;
 };
 
-type CreationValues = {
+export type CreationValues = {
   name: string;
   startPrice: number;
   duration: number;
@@ -24,7 +23,7 @@ type CreationError = {
 };
 
 function CreateItemModal(props: Props) {
-  const { show, onHide, updateItems } = props;
+  const { show, onHide } = props;
   const [cookies] = useCookies(["token"]);
   const [isCreationSuccess, setIsCreationSuccess] = useState(false);
 
@@ -60,21 +59,9 @@ function CreateItemModal(props: Props) {
         }}
         onSubmit={(values: CreationValues, { setSubmitting }: any) => {
           setSubmitting(false);
-          axios
-            .post(
-              `${process.env.REACT_APP_BACKEND_URL}/bidItems/create`,
-              {
-                name: values.name,
-                startPrice: values.startPrice,
-                duration: values.duration,
-              },
-              { headers: { Authorization: `Bearer ${cookies.token}` } }
-            )
-            .then((res: any) => {
-              setIsCreationSuccess(true);
-              updateItems();
-            })
-            .catch(console.log);
+          createItemFx({ token: cookies.token, values }).then(() =>
+            setIsCreationSuccess(true)
+          );
         }}
       >
         {({ isSubmitting }: any) => (
@@ -126,10 +113,5 @@ function CreateItemModal(props: Props) {
     </Modal>
   );
 }
-
-/*
-
-
-*/
 
 export default CreateItemModal;

@@ -3,15 +3,15 @@ import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useCookies } from "react-cookie";
+import { updatedBalance } from "../../Stores/userStore";
 
 type Props = {
   show: boolean;
   onHide: () => void;
-  setBalance: (n: number) => void;
 };
 
 function DepositModal(props: Props) {
-  const { show, onHide, setBalance } = props;
+  const { show, onHide } = props;
   const [cookies] = useCookies(["token"]);
   const [amount, setAmount] = useState(0);
   const [isDepositSuccess, setIsDepositSuccess] = useState(false);
@@ -28,7 +28,7 @@ function DepositModal(props: Props) {
         )
         .then((res: any) => {
           setIsDepositSuccess(true);
-          setBalance(res.data.balance);
+          updatedBalance(res.data.balance);
         })
         .catch(console.log);
   };
