@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  auction-fe:
+    container_name: auction-fe
+    build: ./
+    ports:
+      - 4444:3000
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:9090
+    networks:
+      - backend_pg_network
+
+networks:
+  backend_pg_network:
+    external: true

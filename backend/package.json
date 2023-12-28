@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node app.ts",
-    "start:dev": "nodemon app.ts"
+    "start:dev": "nodemon app.ts",
+    "tsc": "tsc",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",

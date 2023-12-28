@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  auction-fe:
+    container_name: auction-fe
+    build: ./frontend
+    ports:
+      - 4444:3000
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:9090
+    networks:
+      - pg_network
+
+  auction-be:
+    container_name: auction-be
+    build: ./backend
+    ports:
+      - 9090:8080
+    environment:
+      HOST: postgres
+      USER: postgres
+      PASSWORD: 12345678
+      DB: intermediadm
+      DB_PORT: 5432
+      DIALECT: postgres
+    networks:
+      - pg_network
+      
+  postgres:
+    image: postgres
+    container_name: pg_container
+    environment:
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: intermediadm
+    ports:
+      - "5555:5432"
+    networks:
+      - pg_network
+
+networks:
+  pg_network:
+    driver: bridge

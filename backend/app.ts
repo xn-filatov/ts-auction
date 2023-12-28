@@ -148,7 +148,7 @@ app.post("/bidItems/bid", authenticateToken, async (req: any, res) => {
   }
 });
 
-app.get("/bidItems", authenticateToken, async (req, res) => {
+app.get("/bidItems",/* authenticateToken,*/ async (req, res) => {
   try {
     const bidItems = await Bid.findAll()
 
@@ -159,7 +159,18 @@ app.get("/bidItems", authenticateToken, async (req, res) => {
   }
 });
 
+app.get("/", async (req, res) => {
+  try {
+    res.send({ a: 1, b: 2, c: 3 });
+  } catch (error) {
+    res.status(500).send("Internal error");
+    console.log(error);
+  }
+});
+
 app.listen(port, async () => {
-  await sequelize.sync({ force: false });
+  console.log("SERVER STARTED")
+  console.log(env.DB, env.DIALECT)
+  await sequelize.sync({ force: true });
   console.log(`App listening on port ${port}`);
 });

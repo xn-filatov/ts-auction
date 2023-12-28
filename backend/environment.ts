@@ -14,5 +14,6 @@ export default {
     USER: process.env.USER as string,
     PASSWORD: process.env.PASSWORD as string,
     HOST: process.env.HOST as string,
+    DB_PORT: process.env.DB_PORT as string,
     DIALECT: process.env.DIALECT as Dialect,
 }
